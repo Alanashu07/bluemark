@@ -7,6 +7,21 @@ const productSchema = mongoose.Schema({
         required: true,
         trim: true,
     },
+    description: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    sellername: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    sellerid: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     images: [
         {
             type: String,
@@ -18,6 +33,14 @@ const productSchema = mongoose.Schema({
         required: true,
     },
     retailprice:{
+        type: Number,
+        required: true
+    },
+    wholesaleprice:{
+        type: Number,
+        required: true
+    },
+    plusmemberprice:{
         type: Number,
         required: true
     },

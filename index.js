@@ -1,6 +1,7 @@
 //IMPORTS FROM PACKAGES
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 //Imports from other files
 const authRouter = require('./routes/auth');
@@ -19,6 +20,8 @@ app.use(authRouter);
 app.use(adminRouter);
 app.use(productRouter);
 app.use(userRouter);
+app.use("/api", require('./routes/app.routes'));
+app.use(bodyParser.json());
 
 //connections
 mongoose

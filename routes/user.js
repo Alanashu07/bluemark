@@ -34,6 +34,86 @@ userRouter.post('/api/add-to-cart', auth, async (req, res) => {
     }
 });
 
+userRouter.post('/api/products-seller', auth, async (req, res)=> {
+    try{
+//        const products = await Product.find({sellerid: req.id});
+            const products = await Product.find(sellerid);
+        res.json(products);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+userRouter.post('/api/out-of-stock', auth, async(req, res) => {
+    try{
+        const {id} = req.body;
+        let product = await Product.findById(id);
+        product.quantity = 0;
+        product = await product.save();
+        res.json(product);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+userRouter.post('/api/delete-product', auth, async(req, res) => {
+    try{
+            const {id} = req.body;
+            let product = await Product.findByIdAndDelete(id);
+            res.json(product);
+        } catch (e) {
+            res.status(500).json({error: e.message});
+        }
+});
+
+userRouter.get('/api/get-products', auth, async (req, res)=> {
+    try{
+        const products = await Product.find({});
+        res.json(products);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+userRouter.post('/api/add-product', auth, async (req, res) => {
+    try {
+        const {name, description, sellername, sellerid, images, quantity, retailprice, wholesaleprice, plusmemberprice, category} = req.body;
+        let product = new Product({
+            name,
+            description,
+            sellername,
+            sellerid,
+            images,
+            quantity,
+            wholesaleprice,
+            plusmemberprice,
+            retailprice,
+            category,
+        });
+        product = await product.save();
+        res.json(product);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
+userRouter.post('/api/update-product', auth, async (req, res) => {
+    try {
+        const{id, name, description, quantity, wholesaleprice, retailprice, plusmemberprice} = req.body;
+        let product = await Product.findById(id);
+        product.name = name;
+        product.description = description;
+        product.quantity = quantity;
+        product.retailprice = retailprice;
+        product.wholesaleprice = wholesaleprice;
+        product.plusmemberprice = plusmemberprice;
+        product = await product.save();
+        res.json(product);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
 userRouter.delete('/api/remove-from-cart/:id', auth, async (req, res) => {
     try {
         const {id} = req.params;
@@ -53,6 +133,19 @@ userRouter.delete('/api/remove-from-cart/:id', auth, async (req, res) => {
         res.json(user);
     } catch (e) {
         res.status(500).json({error: e.message})
+    }
+});
+
+//change user type
+userRouter.post('/api/change-user-type', auth, async (req, res) => {
+    try {
+        const {type} = req.body;
+        let user = await User.findById(req.user);
+        user.type = type;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({error: e.message});
     }
 });
 
@@ -101,6 +194,36 @@ userRouter.post('/api/order', auth, async (req, res) => {
         res.json(order);
     } catch (e) {
         res.status(500).json({error: e.message});
+    }
+});
+
+//Buy Now Product
+userRouter.post('/api/buy-now', auth, async (req, res) => {
+    try {
+        const {id, totalPrice, address} = req.body;
+        let product = await Product.findById(id);
+        let user = await User.findById(req.user);
+        let products = [];
+        if(product.quantity >= 1) {
+            product.quantity -= 1;
+            products.push({product, quantity: 1});
+            product = await product.save();
+        } else {
+            return res.status(400).json({msg: `${product.name} is out of stock`});
+        }
+
+        let order = new Order ({
+            products,
+            totalPrice,
+            address,
+            userId: req.user,
+            orderedAt: new Date().getTime(),
+        });
+        order = await order.save();
+        res.json(order);
+
+    } catch (e) {
+        return res.status(400).json({error: e.message});
     }
 });
 
