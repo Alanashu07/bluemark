@@ -34,16 +34,6 @@ userRouter.post('/api/add-to-cart', auth, async (req, res) => {
     }
 });
 
-userRouter.post('/api/products-seller', auth, async (req, res)=> {
-    try{
-//        const products = await Product.find({sellerid: req.id});
-            const products = await Product.find(sellerid);
-        res.json(products);
-    } catch (e) {
-        res.status(500).json({error: e.message});
-    }
-});
-
 userRouter.post('/api/out-of-stock', auth, async(req, res) => {
     try{
         const {id} = req.body;
