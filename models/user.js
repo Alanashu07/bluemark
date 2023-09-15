@@ -31,6 +31,10 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "user",
   },
+  referral: {
+    type: String,
+    default: "0",
+  },
   cart: [
     {
       product: productSchema,
