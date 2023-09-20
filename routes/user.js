@@ -177,6 +177,7 @@ userRouter.post('/api/order', auth, async (req, res) => {
             products,
             totalPrice,
             address,
+            isPaid,
             userId: req.user,
             orderedAt: new Date().getTime(),
         });
