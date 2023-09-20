@@ -104,6 +104,18 @@ userRouter.post('/api/update-product', auth, async (req, res) => {
     }
 });
 
+userRouter.post('/api/update-user', auth, async (req, res) => {
+    try {
+        const {id, name} = req.body;
+        let user = await User.findById(id);
+        user.name = name;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
+
 userRouter.delete('/api/remove-from-cart/:id', auth, async (req, res) => {
     try {
         const {id} = req.params;
