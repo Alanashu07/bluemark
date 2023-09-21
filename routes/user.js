@@ -167,7 +167,7 @@ userRouter.post('/api/save-user-address', auth, async (req, res) => {
 //order product
 userRouter.post('/api/order', auth, async (req, res) => {
     try {
-        const {cart, totalPrice, address} = req.body;
+        const {cart, totalPrice, isPaid, address} = req.body;
         let products = [];
 
         for(let i=0; i<cart.length; i++) {
